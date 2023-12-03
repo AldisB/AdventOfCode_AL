@@ -15,18 +15,22 @@ page 52000 "Adventure of Code AOC"
                 field(Year; Rec.Year)
                 {
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Year field.';
                 }
                 field(Day; Rec.Day)
                 {
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Day field.';
                 }
                 field(URL; Rec.URL)
                 {
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the URL to puzzle text and file field.';
                 }
                 field("Answer Codeunit"; Rec."Answer Codeunit")
                 {
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Answer Codeunit field.';
                 }
             }
         }
@@ -47,6 +51,20 @@ page 52000 "Adventure of Code AOC"
                     ImportWaterReadings: Codeunit "Adventure of Code Mgt. AOC";
                 begin
                     ImportWaterReadings.SelectAndImportPuzzle(Rec);
+                end;
+            }
+            action(RemovePuzleInput)
+            {
+                ApplicationArea = All;
+                Caption = 'Remove Puzzle Input';
+                Image = Delete;
+                ToolTip = 'Remove Puzzle Input';
+
+                trigger OnAction()
+                var
+                    ImportWaterReadings: Codeunit "Adventure of Code Mgt. AOC";
+                begin
+                    ImportWaterReadings.RemovePuzzleInput(Rec);
                 end;
             }
         }
