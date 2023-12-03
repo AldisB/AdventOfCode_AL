@@ -9,8 +9,8 @@ codeunit 52001 "2023 Day 2 AOC"
     var
         SourceInStream: InStream;
         PossibleGames: Integer;
-        Line: Text;
         LineElements: List of [Text];
+        Line: Text;
     begin
         InitLimit();
         Rec."Puzzle Imput".CreateInStream(SourceInStream);
@@ -22,22 +22,20 @@ codeunit 52001 "2023 Day 2 AOC"
             PossibleGames += CheckLine(LineElements);
         end;
 
-        Message(format(PossibleGames));
+        Message(Format(PossibleGames));
     end;
 
     local procedure CheckLine(LineElements: List of [Text]): Integer;
     var
-        GameNumbers: List of [Text];
-        GameNumber: Text;
-        Element: Text;
-        i: Integer;
-        CurrentGame: Dictionary of [Text, Integer];
-        CurrentGameIndex: Text;
-        CurrentGameValue: Integer;
-        OneSet: List of [Text];
-        Cube: List of [Text];
-        CubeValue: Integer;
         MinimumSet: Dictionary of [Text, Integer];
+        CubeValue: Integer;
+        CurrentGameValue: Integer;
+        i: Integer;
+        Cube: List of [Text];
+        GameNumbers: List of [Text];
+        OneSet: List of [Text];
+        Element: Text;
+        GameNumber: Text;
     begin
         //Get Game Number from 1st element of Line
         LineElements.Get(1, GameNumber);
@@ -48,10 +46,10 @@ codeunit 52001 "2023 Day 2 AOC"
         for i := 2 to LineElements.Count do begin
             OneSet := LineElements.Get(i).Trim().Split(',');
 
-            //split and get saparate cube index and value and add to dictionary            
+            //split and get saparate cube index and value and add to dictionary
             foreach Element in OneSet do begin
                 Cube := Element.Trim().Split();
-                Evaluate(CubeValue, Cube.get(1));
+                Evaluate(CubeValue, Cube.Get(1));
                 //Part I
                 // if CurrentGame.ContainsKey(Cube.Get(2)) then
                 //     //CurrentGame.Set(Cube.Get(2), CurrentGameValue + CubeValue)
@@ -71,7 +69,7 @@ codeunit 52001 "2023 Day 2 AOC"
             //    exit(0);
         end;
 
-        //for part I        
+        //for part I
         //valuate(CubeValue, GameNumber);
         //exit(CubeValue);
 

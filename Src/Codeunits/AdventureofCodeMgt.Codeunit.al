@@ -13,13 +13,26 @@ codeunit 52000 "Adventure of Code Mgt. AOC"
         PuzzleOutStream: OutStream;
         FileName: Text;
     begin
-        FileName := GetFileName(TempBlob);
-        if FileName <> '' then begin
-            TempBlob.CreateInStream(PuzzleInStream);
-            Puzzle."Puzzle Imput".CreateOutStream(PuzzleOutStream);
-            CopyStream(PuzzleOutStream, PuzzleInStream);
-            Codeunit.Run(Puzzle."Answer Codeunit", Puzzle);
+        Puzzle.CalcFields("Puzzle Imput");
+        if not Puzzle."Puzzle Imput".HasValue then begin
+            FileName := GetFileName(TempBlob);
+            if FileName <> '' then begin
+                TempBlob.CreateInStream(PuzzleInStream);
+                Puzzle."Puzzle Imput".CreateOutStream(PuzzleOutStream);
+                CopyStream(PuzzleOutStream, PuzzleInStream);
+                Puzzle.Modify();
+            end;
         end;
+        if Puzzle."Puzzle Imput".HasValue then
+            Codeunit.Run(Puzzle."Answer Codeunit", Puzzle);
+
+    end;
+
+    procedure RemovePuzzleInput(Puzzle: Record "Puzzle AOC")
+    begin
+        Puzzle.CalcFields("Puzzle Imput");
+        Clear(Puzzle."Puzzle Imput");
+        Puzzle.Modify();
     end;
 
     local procedure GetFileName(var TempBlob: Codeunit "Temp Blob") FileName: Text
