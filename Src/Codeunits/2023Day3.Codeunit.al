@@ -5,6 +5,8 @@ codeunit 52002 "2023 Day 3 AOC"
     var
         Lines: List of [Text];
         SetofLines: List of [List of [Text]];
+        StarCoordinate: Dictionary of [Text, Integer];
+        sumofpartnumbers: integer;
 
     trigger OnRun()
     var
@@ -12,7 +14,6 @@ codeunit 52002 "2023 Day 3 AOC"
         i, j : Integer;
         Line: Text;
         number: Dictionary of [Text, Integer];
-        sumofpartnumbers: integer;
     begin
         Rec."Puzzle Imput".CreateInStream(SourceInStream);
         //Split line by chars and add to list - create matrix of chars 140x140
@@ -34,8 +35,11 @@ codeunit 52002 "2023 Day 3 AOC"
                     number.Add('ToX', j);
 
                     //Check if number is part number
-                    if isPartNumber(i, number) then
-                        sumofpartnumbers += number.Get('Number');
+                    if isPartNumber(i, number) then begin
+                        //Part I
+                        //sumofpartnumbers += number.Get('Number');
+
+                    end;
                     clear(number);
                     Lines := SetofLines.Get(i);
                 end;
@@ -49,11 +53,11 @@ codeunit 52002 "2023 Day 3 AOC"
     begin
         //check if any symbol around number is not dot
         if number.Get('FromX') > 1 then
-            if not isDot(number.Get('FromX') - 1, y) then
+            if not isDot(number.Get('FromX') - 1, y, number.Get('Number')) then
                 exit(true);
 
         if number.Get('ToX') < Lines.Count then
-            if not isDot(number.Get('ToX') + 1, y) then
+            if not isDot(number.Get('ToX') + 1, y, number.Get('Number')) then
                 exit(true);
 
         //if number is first in line
@@ -66,24 +70,40 @@ codeunit 52002 "2023 Day 3 AOC"
 
         if y > 1 then
             for i := number.Get('FromX') - 1 to number.Get('ToX') + 1 do
-                if not isDot(i, y - 1) then
+                if not isDot(i, y - 1, number.Get('Number')) then
                     exit(true);
 
         if (y < SetofLines.Count) then
             for i := number.Get('FromX') - 1 to number.Get('ToX') + 1 do
-                if not isDot(i, y + 1) then
+                if not isDot(i, y + 1, number.Get('Number')) then
                     exit(true);
 
         exit(false);
     end;
 
-    local procedure isDot(x: Integer; y: integer): Boolean
+    // Part I local procedure isDot(x: Integer; y: integer): Boolean
+    local procedure isDot(x: Integer; y: integer; CurrentNumber: Integer): Boolean
+    var
+        secondcog: integer; //Part II
     begin
         Lines := SetofLines.Get(y);
-        if Lines.Get(x) = '.' then
-            exit(true);
+        //Part I
+        // if Lines.Get(x) = '.' then
+        //     exit(true);
 
-        exit(false);
+        // exit(false);
+
+        //Part II
+        if Lines.Get(x) = '*' then begin
+            if StarCoordinate.ContainsKey(format(x) + ';' + Format(y)) then begin
+                StarCoordinate.Get(format(x) + ';' + Format(y), secondcog);
+                sumofpartnumbers += (secondcog * CurrentNumber);
+            end else
+                StarCoordinate.Add(format(x) + ';' + Format(y), CurrentNumber);
+            exit(false)
+        end;
+
+        exit(true);
     end;
 
     local procedure getNumber(var j: Integer; currentnumber: Text): Integer
