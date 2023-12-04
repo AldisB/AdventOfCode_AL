@@ -6,8 +6,10 @@ codeunit 52003 "2023 Day 4 AOC"
     var
         SourceInStream: InStream;
         Score: Integer;
+        i: integer;
         LineElements: List of [Text];
         Line: Text;
+        AllLines: List of [List of [Text]];
     begin
         Rec."Puzzle Imput".CreateInStream(SourceInStream);
         //Create list of subsets
@@ -15,28 +17,31 @@ codeunit 52003 "2023 Day 4 AOC"
             SourceInStream.ReadText(Line);
             Line := Line.Trim();
             LineElements := Line.Trim().Split(':', '|');
-            Score += GetScore(LineElements);
+            AllLines.Add(LineElements);
         end;
+
+        for i := 1 to AllLines.Count do begin
+            LineElements := AllLines.Get(i);
+
+            Score += GetScore(AllLines, i);
+        end;
+
+        //Add original cards
+        Score += AllLines.Count;
 
         Message(Format(Score));
     end;
 
-    local procedure GetScore(LineElements: List of [Text]): Integer;
+    local procedure GetScore(AllLines: List of [List of [Text]]; i: integer): Integer;
     var
-        i: Integer;
-        Cards: List of [Text];
+        j: Integer;
         Element: Text;
-        CardNumber: Text;
         WinningNUmbers: List of [Text];
         NumbersYouHave: List of [Text];
+        LineElements: List of [Text];
         CardScore: Integer;
     begin
-        //Get Game Number from 1st element of Line
-        LineElements.Get(1, CardNumber);
-        Cards := CardNumber.Trim().Split(' ');
-        RemoveEmptyElements(Cards);
-        Cards.Get(2, CardNumber);
-
+        LineElements := AllLines.Get(i);
         //Winning numbers
         LineElements.Get(2, Element);
         WinningNumbers := Element.Trim().Split(' ');
@@ -49,12 +54,12 @@ codeunit 52003 "2023 Day 4 AOC"
 
         //Calc winning numbers
         CardScore := 0;
-        for i := 1 to NumbersYouHave.Count do
-            if WinningNUmbers.Contains(NumbersYouHave.Get(i)) then
-                if CardScore in [0, 1] then
-                    CardScore += 1
-                else
-                    CardScore := CardScore * 2;
+        for j := 1 to NumbersYouHave.Count do
+            if WinningNUmbers.Contains(NumbersYouHave.Get(j)) then begin
+                CardScore += 1;
+                i += 1;
+                CardScore += GetScore(AllLines, i);
+            end;
 
         exit(CardScore);
     end;

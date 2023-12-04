@@ -5,7 +5,7 @@ page 52000 "Adventure of Code AOC"
     PageType = List;
     SourceTable = "Puzzle AOC";
     UsageCategory = Tasks;
-
+    SourceTableView = order(descending);
     layout
     {
         area(Content)
